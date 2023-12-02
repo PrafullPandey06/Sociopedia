@@ -1,0 +1,36 @@
+{
+  message: 'Add/ Remove friends operation',
+  level: 'info',
+  label: 'winston custom format',
+  timestamp: 'Apr-21-2023 22:36:07'
+}
+{
+  message: 'Add/ Remove friends operation',
+  level: 'info',
+  label: 'winston custom format',
+  timestamp: 'Apr-21-2023 22:36:15'
+}
+{
+  message: 'Like/Dislike operation',
+  level: 'info',
+  label: 'winston custom format',
+  timestamp: 'Apr-21-2023 22:50:40'
+}
+{
+  message: 'Like/Dislike operation',
+  level: 'info',
+  label: 'winston custom format',
+  timestamp: 'Apr-21-2023 22:50:41'
+}
+{
+  message: 'Add/ Remove friends operation',
+  level: 'info',
+  label: 'winston custom format',
+  timestamp: 'Apr-22-2023 00:20:36'
+}
+{
+  message: 'Add/ Remove friends operation',
+  level: 'info',
+  label: 'winston custom format',
+  timestamp: 'Apr-22-2023 00:20:37'
+}

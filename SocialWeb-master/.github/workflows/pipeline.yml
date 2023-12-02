@@ -1,0 +1,101 @@
+name: Build and Deploy
+
+# Run the workflow when code is pushed to the main branch
+on:
+  push:
+    branches:
+      - master
+
+# Set environment variables
+env:
+  MONGO_URL: ${{ secrets.MONGO_URL }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  PORT: 3001
+  PORTF: 6002
+# This is the workflow that is being run.
+jobs:
+  build:
+    # This is telling GitHub to run the workflow on the latest version of Ubuntu.
+    runs-on: ubuntu-latest
+    env:
+      MONGO_URL: ${{ secrets.MONGO_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      PORT: 3001
+      PORTF: 6002
+    steps:
+      # Checkout the code from the GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install dependencies and run tests for the client application
+      - name: Install and Test Client
+        working-directory: ./SocialFrontEnd/socialfrontend
+        run: |
+          npm install
+
+      # Install dependencies, export environment variables to be used by application and run tests for the server application
+      - name: Install and Test Server
+        working-directory: ./SocialBackend
+        run: |
+          npm install 
+          export JWT_SECRET=$JWT_SECRET
+          export PORT=3001
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the code from the GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Build a Docker image for the server application
+      - name: Build Server Docker Image
+        working-directory: ./SocialBackend
+
+        run: |
+          docker build --network host \
+          --build-arg MONGO_URL=$MONGO_URL \
+          --build-arg PORT=$PORT \
+          --build-arg JWT_SECRET=$JWT_SECRET \
+          -t hims0301/backend:latest .
+
+      - name: Build Client Docker Image
+        working-directory: ./SocialFrontEnd/socialfrontend
+
+        run: |
+          docker build --network host \
+          --build-arg PORT=$PORTF \
+          -t hims0301/frontend:latest .
+
+      # Login to Docker Hub using credentials from repository secrets
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Push the Docker images to Docker Hub
+      - name: Push Docker Images to Docker Hub
+        run: |
+          docker push prafull006/frontend:latest
+          docker push prafull006/backend:latest
+
+  deploy:
+    needs: publish
+    runs-on: self-hosted
+    steps:
+      # Checkout the code from the GitHub repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+
+      # Build and start the containers
+      - name: Build and start the containers
+        run: |
+          docker-compose -f docker-compose.yaml up -d

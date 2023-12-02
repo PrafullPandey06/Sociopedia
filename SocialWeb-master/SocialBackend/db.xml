@@ -1,0 +1,58 @@
+
+Table User {
+  _id String
+  firstName String
+  lastName String
+  friends Array
+  email String
+  password String
+  picturePath String 
+  location String
+  occupation String
+  viewedProfile Number
+  impressions Number 
+}
+
+Table Post {
+  _id String [primary key]
+  userId String
+  firstName String
+  lastName String
+  location String
+  description String
+  userPicturePath String
+  picturePath String
+  likes Object
+  comments Array
+
+}
+
+Table Friend {
+   _id String
+  firstName String
+  lastName String
+  picturePath String 
+  location String
+  occupation String
+}
+
+Table Images{
+  path String
+}
+
+
+Ref: User.friends < Friend._id // one-to-many
+
+Ref: User.picturePath - Images.path
+
+Ref: Friend.picturePath - Images.path
+
+Ref: Post.picturePath - Images.path
+
+Ref: Post.userPicturePath - Images.path
+
+Ref: Post.likes < User._id
+
+Ref: Post._id - User._id
+
+Ref: User._id < Friend._id 
