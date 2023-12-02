@@ -58,7 +58,7 @@ jobs:
           --build-arg MONGO_URL=$MONGO_URL \
           --build-arg PORT=$PORT \
           --build-arg JWT_SECRET=$JWT_SECRET \
-          -t hims0301/backend:latest .
+          -t prafull006/backend:latest .
 
       - name: Build Client Docker Image
         working-directory: ./SocialFrontEnd/socialfrontend
@@ -66,7 +66,7 @@ jobs:
         run: |
           docker build --network host \
           --build-arg PORT=$PORTF \
-          -t hims0301/frontend:latest .
+          -t prafull006/frontend:latest .
 
       # Login to Docker Hub using credentials from repository secrets
       - name: Login to Docker Hub
